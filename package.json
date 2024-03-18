@@ -1,0 +1,36 @@
+{
+  "name": "practica_9_dsi",
+  "version": "1.0.0",
+  "description": "<sup>Daniel Marhuenda Guillén, [alu0101487731@ull.edu.es](https://github.com/danielmarhuenda",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "doc": "typedoc",
+    "test": "mocha",
+    "coverage": "c8 npm test && c8 report --reporter=lcov"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.3.12",
+    "@types/inquirer": "^9.0.7",
+    "@types/lowdb": "^1.0.15",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.24",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "c8": "^9.1.0",
+    "chai": "^4.4.1",
+    "coveralls": "^3.1.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "inquirer": "^7.3.3",
+    "lowdb": "^1.0.0",
+    "mocha": "^10.3.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
+    "typedoc": "^0.25.8",
+    "typescript": "^5.3.3"
+  }
+}
