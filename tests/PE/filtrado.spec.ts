@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { FilterMapAddReduce, FilterMapSubReduce, FilterMapDivReduce, FilterMapProdReduce } from '../src/filtrado.js';
+import { FilterMapAddReduce, FilterMapSubReduce, FilterMapDivReduce, FilterMapProdReduce } from '../../src/PE/filtrado.js';
 
 let filtermap:FilterMapAddReduce = new FilterMapAddReduce([1, 1, 1, 2, 3, 3, 4, 5]);
 
