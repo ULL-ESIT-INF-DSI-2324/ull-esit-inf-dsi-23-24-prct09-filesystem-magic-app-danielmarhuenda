@@ -9,6 +9,11 @@ export class Coleccion {
 
   protected coleccion_: Map<number, Carta>;
   
+  /**
+   * Constructor de la clase Coleccion, al crearla almacena el contenido de los ficheros y 
+   * los añade a su mapa interno, por eso aparece el mensaje de carta añadida a la colección
+   * @param usuario Nombre del coleccionista
+   */
   constructor(protected usuario:string){
     this.coleccion_ = new Map<number, Carta>(); 
     if(!fs.existsSync("./colecciones/" + usuario)){
@@ -73,11 +78,20 @@ export class Coleccion {
     }); 
   }
 
-
+  /**
+   * Buscar una carta a partir de su ID único
+   * @param id ID de la carta a buscar
+   * @returns La carta buscada
+   */
   getCarta(id: number): Carta | undefined {
     return this.coleccion_.get(id);
   }
 
+  /**
+   * Añade una nueva carte a la colección
+   * @param carta Carta a añadir
+   * @returns Si se ha añadido correctamente o no
+   */
   addCarta(carta: Carta): boolean {
     if(this.coleccion_.has(carta.getID())){
       console.log(chalk.red("Card already exists at " + this.usuario + " collection! "));
@@ -98,6 +112,12 @@ export class Coleccion {
     }
   }
 
+  
+  /**
+   * Modifica una carta de la colección
+   * @param carta Carta actualizada, debe tener el mismo ID para que sobreescriba la versión antigua
+   * @returns Booleano si se actualizó correctamente
+   */
   modCarta(carta: Carta): boolean {
     if(this.coleccion_.has(carta.getID())){
       this.coleccion_.set(carta.getID(), carta);
@@ -110,6 +130,11 @@ export class Coleccion {
     }
   }
 
+  /**
+   * Elimina una carta de la coleccion
+   * @param id carta a eliminar
+   * @returns booleano si se pudo borrar correctamente
+   */
   quitarCarta(id: number): boolean {
     const ruta = "./colecciones/" + this.usuario + "/" + id + ".json";
     if(!this.coleccion_.delete(id)){

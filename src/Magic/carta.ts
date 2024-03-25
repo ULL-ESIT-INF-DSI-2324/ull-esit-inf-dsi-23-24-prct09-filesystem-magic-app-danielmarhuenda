@@ -85,11 +85,18 @@ export class Carta {
         }
     }
 
+    /**
+     * Getter del ID único de la carta
+     * @returns ID de la carta
+     */
     public getID():number{return this.id};
 
     
 
-    //Para no repertirlos en las clases hijas, llaman a esta y después añaden lo propio
+    /**
+     * Función interna usada para no repetir código en las clases hijas, todas hacen esto
+     * y después añaden lo que añada su tipo de carta
+     */
     protected ImprimirBase():void{
         console.log(chalk.green("ID: " + this.id));
         console.log(chalk.green("Nombre: " + this.nombre));
@@ -104,6 +111,9 @@ export class Carta {
         console.log(chalk.green("Valor mercado: " + this.mercado  + "€"));
     }
 
+    /**
+     * Función para imprimir por pantalla el contenido de la carta
+     */
     Imprimir():void{
         this.ImprimirBase();
     }

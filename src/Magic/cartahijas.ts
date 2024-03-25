@@ -33,6 +33,9 @@ export class CartaPlaneswalkerBatalla extends Carta{
     }
 }
 
+/**
+ * Artefacto Encantamiento y Tierra añaden solamente subtipo
+ */
 export class CartaArtefactoEncantamientoTierra extends Carta{
     //Artefacto y Encantamiento y Tierra añaden lo mismo
     //Añade subtipo ("Equipamiento"), ("Aura"), ("Portal")
