@@ -2,10 +2,12 @@ import { Carta, ColorCarta, TipoCarta, Rareza } from "./carta.js";
 
 import chalk from "chalk";
 
+/**
+ * Constructor del tipo criatura
+ * Añade subtipo [Caballero, Goblin]
+ * Añade fuerza/Resistencia [3, 4]
+ */
 export class CartaCriatura extends Carta{
-
-    //Añade subtipo [Caballero, Goblin]
-    //Añade fuerza/Resistencia [3, 4]
     constructor(id:number, nombre:string, coste:(number|ColorCarta)[], tipo:TipoCarta[], 
     rareza:Rareza, texto:string, mercado:number, public subtipo:string[], public stats:[number, number]){
         super(id, nombre, coste, tipo, rareza, texto, mercado);
@@ -18,10 +20,12 @@ export class CartaCriatura extends Carta{
     }
 }
 
+/**
+ * Constructor de los tipos PlanesWalker y Batalla
+ * Añaden subtipo ("Jace"), ("Asedio")
+ * Añaden contadores de lealtad o de defensa
+ */
 export class CartaPlaneswalkerBatalla extends Carta{
-    //Batalla y Planeswalker añaden lo mismo
-    //Añade subtipo ("Jace"), ("Asedio")
-    //Añade contadores de lealtad o de defensa
     constructor(id:number, nombre:string, coste:(number|ColorCarta)[], tipo:TipoCarta[], 
     rareza:Rareza, texto:string, mercado:number, public subtipo:string, public puntos:number){
         super(id, nombre, coste, tipo, rareza, texto, mercado);
@@ -34,14 +38,13 @@ export class CartaPlaneswalkerBatalla extends Carta{
 }
 
 /**
- * Artefacto Encantamiento y Tierra añaden solamente subtipo
+ * Constructor de los demás tipos
+ * Pueden tener subtipos pero no es obligatorio
+ * ImprimirBase se encarga de no imprimir el coste de maná si es tierra
+ * Todas las tierras son incoloras así que no hay problema de coste->color
+ * Instantáneos y conjuros pueden tener subtipo si son tribales, trampas, arcanos...
  */
-export class CartaArtefactoEncantamientoTierra extends Carta{
-    //Artefacto y Encantamiento y Tierra añaden lo mismo
-    //Añade subtipo ("Equipamiento"), ("Aura"), ("Portal")
-    //ImprimirBase se encarga de ignorar el coste de maná de la tierra
-    //Todas las tierras son incoloras así que no hay problema en eso
-    
+export class CartaResto extends Carta{
     constructor(id:number, nombre:string, coste:(number|ColorCarta)[], tipo:TipoCarta[], 
     rareza:Rareza, texto:string, mercado:number, public subtipo:string){
         super(id, nombre, coste, tipo, rareza, texto, mercado);

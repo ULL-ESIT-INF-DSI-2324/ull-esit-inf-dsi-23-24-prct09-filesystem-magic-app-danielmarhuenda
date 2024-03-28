@@ -4,16 +4,73 @@ import { hideBin } from 'yargs/helpers';
 import chalk from "chalk";
 
 import { Carta, TipoCarta, ColorCarta, Rareza } from "./carta.js";
-import { CartaCriatura, CartaArtefactoEncantamientoTierra, CartaPlaneswalkerBatalla} from "./cartahijas.js"
+import { CartaCriatura, CartaResto, CartaPlaneswalkerBatalla} from "./cartahijas.js"
 import { Coleccion } from './coleccion.js';
 
-/*
-Orden de construcción de carta:
-Preguntar cosas de la clase base (id, nombre, coste, tipo, texto y mercado)
-Si su tipo[0] es una calse hija hacerla de ese tipo (ej:Criatura encantamiento usa criatura)
-No preguntar coste si es una tierra
-Poner parámetros obtenidos en el constructor correspondiente(Base es el else de los else if)
-*/
+function CrearCarta(argv:any ):Carta{
+  let costecolorado:(number|ColorCarta)[] = [];
+  if(typeof argv.coste === 'string') costecolorado = CosteStringAColorCarta(argv.coste);
+  let carta:Carta;
+
+  
+  if(argv.tipo[0] == TipoCarta.Criatura){
+    if(typeof argv.subtipo === 'undefined' || typeof argv.stats === 'undefined'){
+      console.log(chalk.red("Las criaturas deben llevar un subtipo y una [fuerza, resistencia]! "));
+      process.exit(2);
+    }
+
+    carta = new CartaCriatura(
+      argv.id,
+      argv.nombre,
+      costecolorado,
+      argv.tipo as TipoCarta[],
+      argv.rareza as Rareza,
+      argv.texto,
+      argv.mercado,
+      argv.subtipo as string[],
+      argv.stats as [number, number],
+    );
+
+  }else if(argv.tipo[0] == TipoCarta.Planeswalker || argv.tipo[0] == TipoCarta.Batalla){
+    if(typeof argv.subtipo === 'undefined' || typeof argv.puntos === 'undefined' || typeof argv.subtipo[0] === 'undefined'){
+      console.log(chalk.red("Las batallas y los planeswalker deben llevar una puntuación de lealtad o de defensa y un subtipo! "));
+      process.exit(2);
+    }
+    
+    carta = new CartaPlaneswalkerBatalla(
+      argv.id,
+      argv.nombre,
+      costecolorado,
+      argv.tipo as TipoCarta[],
+      argv.rareza as Rareza,
+      argv.texto,
+      argv.mercado,
+      argv.subtipo[0] as string,
+      argv.puntos as number,
+    );
+
+  }else{
+    //Estos pueden no tener subtipo así que no pongo caso de error por no tener.
+    let subtipo:string = "";
+    if(typeof argv.subtipo !== 'undefined' && typeof argv.subtipo[0] !== 'undefined'){
+      subtipo = argv.subtipo[0] as string;
+    }
+    carta = new CartaResto(
+      argv.id,
+      argv.nombre,
+      costecolorado,
+      argv.tipo as TipoCarta[],
+      argv.rareza as Rareza,
+      argv.texto,
+      argv.mercado,
+      subtipo,
+    );
+
+  }
+
+
+  return carta;
+}
 
 /**
  * Función para pasar el formato de coste de oficial a colores legibles
@@ -82,7 +139,6 @@ yargs(hideBin(process.argv))
   },
   coste: {
     desciption: 'Coste en maná en formato WUBRG, ej: 3WR para 3 genéricos, un blanco y un rojo',
-    //2BB como string será más fácil supongo
     type: 'string',
     demandOption: false,
   },
@@ -126,76 +182,7 @@ yargs(hideBin(process.argv))
   
  }, (argv) => {
   const usuario_ = new Coleccion(argv.usuario);
-  let costecolorado:(number|ColorCarta)[] = [];
-
-  if(typeof argv.coste === 'string') costecolorado = CosteStringAColorCarta(argv.coste);
-
-  let carta:Carta;
-
-  if(argv.tipo[0] == TipoCarta.Criatura){
-    if(typeof argv.subtipo === 'undefined' || typeof argv.stats === 'undefined'){
-      console.log(chalk.red("Las criaturas deben llevar un subtipo y una [fuerza, resistencia]! "));
-      process.exit(2);
-    }
-
-    carta = new CartaCriatura(
-      argv.id,
-      argv.nombre,
-      costecolorado,
-      argv.tipo as TipoCarta[],
-      argv.rareza as Rareza,
-      argv.texto,
-      argv.mercado,
-      argv.subtipo as string[],
-      argv.stats as [number, number],
-    );
-
-  }else if(argv.tipo[0] == TipoCarta.Planeswalker || argv.tipo[0] == TipoCarta.Batalla){
-    if(typeof argv.subtipo === 'undefined' || typeof argv.puntos === 'undefined' || typeof argv.subtipo[0] === 'undefined'){
-      console.log(chalk.red("Las batallas y los planeswalker deben llevar una puntuación de lealtad o de defensa y un subtipo! "));
-      process.exit(2);
-    }
-    
-    carta = new CartaPlaneswalkerBatalla(
-      argv.id,
-      argv.nombre,
-      costecolorado,
-      argv.tipo as TipoCarta[],
-      argv.rareza as Rareza,
-      argv.texto,
-      argv.mercado,
-      argv.subtipo[0] as string,
-      argv.puntos as number,
-    );
-
-  }else if(argv.tipo[0] == TipoCarta.Encantamiento || argv.tipo[0] == TipoCarta.Artefacto || argv.tipo[0] == TipoCarta.Tierra){
-    //Estos pueden no tener subtipo así que no pongo caso de error por no tener.
-    let subtipo:string = "";
-    if(typeof argv.subtipo !== 'undefined' && typeof argv.subtipo[0] !== 'undefined'){
-      subtipo = argv.subtipo[0] as string;
-    }
-    carta = new CartaArtefactoEncantamientoTierra(
-      argv.id,
-      argv.nombre,
-      costecolorado,
-      argv.tipo as TipoCarta[],
-      argv.rareza as Rareza,
-      argv.texto,
-      argv.mercado,
-      subtipo,
-    );
-
-  }else{
-    carta = new Carta(
-      argv.id,
-      argv.nombre,
-      costecolorado,
-      argv.tipo as TipoCarta[],
-      argv.rareza as Rareza,
-      argv.texto,
-      argv.mercado
-    );
-  }
+  let carta:Carta = CrearCarta(argv);
 
   usuario_.addCarta(carta);
 
@@ -222,7 +209,6 @@ yargs(hideBin(process.argv))
   },
   coste: {
     desciption: 'Coste en maná en formato WUBRG, ej: 3WR para 3 genéricos, un blanco y un rojo',
-    //2BB como string será más fácil supongo
     type: 'string',
     demandOption: false,
   },
@@ -266,76 +252,7 @@ yargs(hideBin(process.argv))
   
  }, (argv) => {
   const usuario_ = new Coleccion(argv.usuario);
-  let costecolorado:(number|ColorCarta)[] = [];
-
-  if(typeof argv.coste === 'string') costecolorado = CosteStringAColorCarta(argv.coste);
-
-  let carta:Carta;
-
-  if(argv.tipo[0] == TipoCarta.Criatura){
-    if(typeof argv.subtipo === 'undefined' || typeof argv.stats === 'undefined'){
-      console.log(chalk.red("Las criaturas deben llevar un subtipo y una [fuerza, resistencia]! "));
-      process.exit(2);
-    }
-
-    carta = new CartaCriatura(
-      argv.id,
-      argv.nombre,
-      costecolorado,
-      argv.tipo as TipoCarta[],
-      argv.rareza as Rareza,
-      argv.texto,
-      argv.mercado,
-      argv.subtipo as string[],
-      argv.stats as [number, number],
-    );
-
-  }else if(argv.tipo[0] == TipoCarta.Planeswalker || argv.tipo[0] == TipoCarta.Batalla){
-    if(typeof argv.subtipo === 'undefined' || typeof argv.puntos === 'undefined' || typeof argv.subtipo[0] === 'undefined'){
-      console.log(chalk.red("Las batallas y los planeswalker deben llevar una puntuación de lealtad o de defensa y un subtipo! "));
-      process.exit(2);
-    }
-    
-    carta = new CartaPlaneswalkerBatalla(
-      argv.id,
-      argv.nombre,
-      costecolorado,
-      argv.tipo as TipoCarta[],
-      argv.rareza as Rareza,
-      argv.texto,
-      argv.mercado,
-      argv.subtipo[0] as string,
-      argv.puntos as number,
-    );
-
-  }else if(argv.tipo[0] == TipoCarta.Encantamiento || argv.tipo[0] == TipoCarta.Artefacto || argv.tipo[0] == TipoCarta.Tierra){
-    //Estos pueden no tener subtipo así que no pongo caso de error por no tener.
-    let subtipo:string = "";
-    if(typeof argv.subtipo !== 'undefined' && typeof argv.subtipo[0] !== 'undefined'){
-      subtipo = argv.subtipo[0] as string;
-    }
-    carta = new CartaArtefactoEncantamientoTierra(
-      argv.id,
-      argv.nombre,
-      costecolorado,
-      argv.tipo as TipoCarta[],
-      argv.rareza as Rareza,
-      argv.texto,
-      argv.mercado,
-      subtipo,
-    );
-
-  }else{
-    carta = new Carta(
-      argv.id,
-      argv.nombre,
-      costecolorado,
-      argv.tipo as TipoCarta[],
-      argv.rareza as Rareza,
-      argv.texto,
-      argv.mercado
-    );
-  }
+  let carta:Carta = CrearCarta(argv);
 
   usuario_.modCarta(carta);
 

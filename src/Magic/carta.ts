@@ -37,9 +37,7 @@ export enum TipoCarta{
     Instantaneo = 'instantaneo',
     Artefacto = 'artefacto',
     Planeswalker = 'planeswalker',
-    //Legendario es tipo secundario frecuente, ´
-    //Tribal es tipo secundario en desuso
-    //Batalla es el tipo más nuevo
+
     Legendario = 'legendario',
     Tribal = 'tribal',
     Batalla = 'batalla',
@@ -53,16 +51,14 @@ export enum Rareza{
     Mítico = 'mitico',
 }
 
-//No la hago clase abstracta porque Tierra, Instantáneo y Conjuro usan la clase base
-export class Carta {
-    /*
-    //Ejemplo, [2, Azul, Azul, Verde]
-    coste:(number|Color)[];
 
-    //Ejemplo: Helios: Criatura encantamiento legendaria
-    tipo:TipoCarta[];
-    */
-   color:ColorCarta;
+/**
+ * Clase padre de las cartas
+ * Contiene los atributos obligatorios para todas las cartas excepto tierra
+ */
+export abstract class Carta {
+
+    color:ColorCarta;
     constructor(protected id:number, protected nombre:string, protected coste:(number|ColorCarta)[], 
     protected tipo:TipoCarta[], protected rareza:Rareza, 
     protected texto:string, protected mercado:number){

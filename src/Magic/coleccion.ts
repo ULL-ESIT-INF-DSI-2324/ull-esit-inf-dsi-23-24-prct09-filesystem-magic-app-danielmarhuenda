@@ -1,5 +1,5 @@
 import { Carta, TipoCarta } from "./carta.js";
-import { CartaCriatura, CartaArtefactoEncantamientoTierra, CartaPlaneswalkerBatalla} from "./cartahijas.js"
+import { CartaCriatura, CartaResto, CartaPlaneswalkerBatalla} from "./cartahijas.js"
 
 
 import chalk from "chalk";
@@ -51,8 +51,8 @@ export class Coleccion {
           carta_unknown.subtipo,
           carta_unknown.puntos,
         );
-      }else if(carta_unknown.tipo[0] == TipoCarta.Encantamiento || carta_unknown.tipo[0] == TipoCarta.Artefacto || carta_unknown.tipo[0] == TipoCarta.Tierra){
-        carta = new CartaArtefactoEncantamientoTierra(
+      }else{
+        carta = new CartaResto(
           carta_unknown.id,
           carta_unknown.nombre,
           carta_unknown.coste,
@@ -61,16 +61,6 @@ export class Coleccion {
           carta_unknown.texto,
           carta_unknown.mercado,
           carta_unknown.subtipo,
-        );
-      }else{
-        carta = new Carta(
-          carta_unknown.id,
-          carta_unknown.nombre,
-          carta_unknown.coste,
-          carta_unknown.tipo,
-          carta_unknown.rareza,
-          carta_unknown.texto,
-          carta_unknown.mercado,
         );
       }
       this.addCarta(carta);
